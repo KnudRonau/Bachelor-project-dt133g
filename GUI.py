@@ -5,6 +5,8 @@ import CoreFunctionality as cf
 
 class GUI:
     temperature = 0.0
+    branches = []
+    local_repo_path = ""
 
     def __init__(self, master):
         self.master = master
@@ -35,13 +37,16 @@ class GUI:
         self.url_input = CTkEntry(master)
         self.url_input.pack(fill=X)
 
-        self.url_button = CTkButton(master, text="select repository", command=self.select_repository)
+        self.url_button = CTkButton(master, text="select repository", command=self.on_select_repository)
         self.url_button.pack()
 
-        self.branch_label = CTkLabel(master, text="Enter branch name:")
+        self.branches_combobox = CTkComboBox(master, values=self.branches, command=self.on_branch_select)
+        self.branches_combobox.pack()
+
+        """ self.branch_label = CTkLabel(master, text="Enter branch name:")
         self.branch_label.pack()
         self.branch_input = CTkEntry(master)
-        self.branch_input.pack(fill=X)
+        self.branch_input.pack(fill=X) """
 
         self.label = CTkLabel(master, text="Temperature: 0.0")
         self.label.pack()
@@ -66,8 +71,14 @@ class GUI:
         self.temperature = float(value)
         self.label.configure(text = 'Temperature: ' + str(round(value, 1)))
     
-    def select_repository(self):
+    def on_select_repository(self):
+        self.branches, self.local_repo_path = cf.return_branches(self.url_input.get())
+        self.branches_combobox.configure(values=self.branches)
         self.chat_log.insert(END, cf.return_branches(self.url_input.get()))
+
+    def on_branch_select(self, value):
+
+        self.chat_log.insert(END, f"Selected branch: {value}\n")
 
     # call setup method in WorkingVersion1.py with GIT path and model path
     def locate_file(self):
