@@ -1,0 +1,8 @@
+/.venv
+
+# Other files and folders
+.settings/
+__pycache__/
+repo_data/
+
+
