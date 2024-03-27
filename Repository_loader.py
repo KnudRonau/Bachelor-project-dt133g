@@ -7,13 +7,12 @@ from langchain_community.vectorstores.faiss import FAISS
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 
-
 BASE_PATH = "./repo_data/"
 BASE_VECTORDATABASE_PATH = "./vector_database_data/"
 REPO_NAME_PATTERN = r'[^/]+$'
 
-
-def get_branches_online(_path):
+# clones repo and returns local path along with list of branches
+def get_branches_online(_path: str):
     local_repo_path = BASE_PATH + re.search(REPO_NAME_PATTERN, _path).group(0)
     if os.path.exists(local_repo_path):
         return get_branches_local(local_repo_path)
@@ -22,14 +21,15 @@ def get_branches_online(_path):
     repo.close()
     return branches, local_repo_path
 
-def get_branches_local(_path):
+# returns path and branches
+def get_branches_local(_path: str):
     repo = git.Repo(_path)
     branches = [str(branch) for branch in repo.branches]
     repo.close()
     return branches, _path
 
-
-def load_repo(_path, _branch):
+# splits repo and embeds it and stores it in a vector database. Returns DB and embedding model. 
+def load_repo(_path: str, _branch: str):
     loader = GitLoader(
         repo_path=_path,
         branch=_branch
@@ -42,7 +42,7 @@ def load_repo(_path, _branch):
     embeddings_model = OpenAIEmbeddings(model="text-embedding-3-small")
 
     if os.path.exists(vector_database_path):
-        db = FAISS.load_local(folder_path=vector_database_path, embeddings_model=embeddings_model, allow_dangerous_deserialization=True)
+        db = FAISS.load_local(folder_path=vector_database_path, embeddings=embeddings_model, allow_dangerous_deserialization=True)
         print("Loaded existing vector database")
         return db, embeddings_model
 
@@ -197,9 +197,6 @@ def load_repo(_path, _branch):
 
     for document in split_repo:
         document.metadata.pop("source", None)
-
-    """ for document in split_repo:
-        print(document) """
 
     db = FAISS.from_documents(documents=split_repo, embedding=embeddings_model)
 

@@ -7,20 +7,21 @@ from langchain_core.prompts.chat import (
     HumanMessagePromptTemplate,
     SystemMessagePromptTemplate,
 )
-
 from getpass import getpass
+
 
 OPENAI_API_KEY = getpass("Enter your OpenAI API key: ")
 os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
-
-def return_branches(_path): 
+# Calls method to return branches and local repo path. Clones repo first if a Git url is inputted. 
+def return_branches(_path: str): 
     pattern = r'^https'
     if re.match(pattern, _path):
         return rl.get_branches_online(_path)
     else:
         return rl.get_branches_local(_path)
 
+# sets up global variables for the vector database, embeddings model and llm
 def setup(_repo_path: str, _branch: str, _temperature: float):
     global vector_database
     global embeddings_model
@@ -29,6 +30,7 @@ def setup(_repo_path: str, _branch: str, _temperature: float):
     vector_database, embeddings_model = rl.load_repo(_repo_path, _branch)
     llm = ChatOpenAI(model="gpt-3.5-turbo-16k", temperature=_temperature)
 
+# query model and return answer based on context
 def query_model(_query: str):
     if(vector_database is None or embeddings_model is None or llm is None):
         return "Please load a repository and model first"
