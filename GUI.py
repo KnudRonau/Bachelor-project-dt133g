@@ -1,7 +1,7 @@
 from customtkinter import *
 import CoreFunctionality as cf
 
-# pip install langchain, langchain_openai, GitPython, customtkinter
+# pip install langchain, langchain_openai, GitPython, customtkinter, faiss-cpu
 
 class GUI:
     temperature = 0.0
@@ -40,24 +40,26 @@ class GUI:
         self.url_button = CTkButton(master, text="select repository", command=self.on_select_repository)
         self.url_button.pack()
 
-        self.branches_combobox = CTkComboBox(master, values=self.branches, command=self.on_branch_select)
-        self.branches_combobox.pack()
 
         """ self.branch_label = CTkLabel(master, text="Enter branch name:")
         self.branch_label.pack()
         self.branch_input = CTkEntry(master)
         self.branch_input.pack(fill=X) """
 
-        self.label = CTkLabel(master, text="Temperature: 0.0")
-        self.label.pack()
-
         self.scale = CTkSlider(master, from_=0, to=1, number_of_steps=10, orientation="horizontal", command=self.on_scale)
         self.scale.set(0)
         self.scale.pack()
 
+        self.label = CTkLabel(master, text="Temperature: 0.0")
+        self.label.pack()
+
+        self.branches_combobox = CTkComboBox(master, values=self.branches, command=self.on_branch_select)
+        self.branches_combobox.pack()
+
+        
         # File Locator
-        self.file_button = CTkButton(master, text="Select model", command=self.locate_file)
-        self.file_button.pack()
+        """ self.file_button = CTkButton(master, text="Select model", command=self.locate_file)
+        self.file_button.pack() """
 
     # Query the LLM with inputted text and display the response
     def send_message(self):
@@ -77,15 +79,15 @@ class GUI:
         self.chat_log.insert(END, cf.return_branches(self.url_input.get()))
 
     def on_branch_select(self, value):
-
         self.chat_log.insert(END, f"Selected branch: {value}\n")
+        cf.setup(self.local_repo_path, value, self.temperature)
 
     # call setup method in WorkingVersion1.py with GIT path and model path
-    def locate_file(self):
+    """ def locate_file(self):
         #file_path = filedialog.askopenfilename()
         #if file_path:
         self.chat_log.insert(END, f"Trying to load repository and LLM...\n")
-        self.chat_log.insert(END, cf.setup(self.url_input.get(), self.branch_input.get(), self.temperature)+"\n")
+        self.chat_log.insert(END, cf.setup(self.url_input.get(), self.branch_input.get(), self.temperature)+"\n") """
             
 
 def main():

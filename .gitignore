@@ -4,5 +4,6 @@
 .settings/
 __pycache__/
 repo_data/
+vector_database_data/
 
 
