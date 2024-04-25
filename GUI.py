@@ -3,6 +3,8 @@ import CoreFunctionality as cf
 
 
 # pip install langchain, langchain_openai, GitPython, customtkinter, faiss-cpu
+# https://github.com/nukeop/nuclear 
+# D:/BachelorWS/Old Nuclear/nuclear
 
 class GUI:
     temperature = 0.0

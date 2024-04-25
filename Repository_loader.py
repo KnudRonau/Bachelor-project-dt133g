@@ -39,7 +39,7 @@ def load_repo(_path: str, _branch: str):
 
     vector_database_path = BASE_VECTORDATABASE_PATH + re.search(REPO_NAME_PATTERN, _path).group(0)
 
-    embeddings_model = OpenAIEmbeddings(model="text-embedding-3-small")
+    embeddings_model = OpenAIEmbeddings(model="text-embedding-3-large")
 
     if os.path.exists(vector_database_path):
         db = FAISS.load_local(folder_path=vector_database_path, embeddings=embeddings_model, allow_dangerous_deserialization=True)
@@ -188,8 +188,8 @@ def load_repo(_path: str, _branch: str):
     ]
 
     text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1200,
-        chunk_overlap=100,
+        chunk_size=1600,
+        chunk_overlap=200,
         separators=coding_separators
     )
 

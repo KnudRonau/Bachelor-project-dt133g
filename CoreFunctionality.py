@@ -28,7 +28,7 @@ def setup(_repo_path: str, _branch: str, _temperature: float):
     global llm
 
     vector_database, embeddings_model = rl.load_repo(_repo_path, _branch)
-    llm = ChatOpenAI(model="gpt-3.5-turbo-16k", temperature=_temperature)
+    llm = ChatOpenAI(model="gpt-4-turbo", temperature=_temperature)
 
 # query model and return answer based on context
 def query_model(_query: str):
@@ -36,9 +36,12 @@ def query_model(_query: str):
         return "Please load a repository and model first"
     
     embedded_query = embeddings_model.embed_query(_query)
-    context = vector_database.similarity_search_by_vector(embedded_query, k=8)
+    context = vector_database.similarity_search_by_vector(embedded_query, k=16)
+    for document in context:
+        if "test" in document.metadata.get("file_path"):
+            context.remove(document)
 
-    template = "You are an AI programming assistant. Use the following pieces of context to answer the question at the end:\n{context}"
+    template = "You are an AI programming assistant, that gives comprehensive answers. Use the following pieces of context to answer the question at the end:\n{context}"
     system_message_prompt = SystemMessagePromptTemplate.from_template(template)
     human_template = "{question}"
     human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
@@ -52,4 +55,6 @@ def query_model(_query: str):
         ).to_messages()
     )
     print(response)
+    print("\n\n")
+    print(context)
     return response.content
