@@ -41,7 +41,7 @@ def query_model(_query: str):
         if "test" in document.metadata.get("file_path"):
             context.remove(document)
 
-    template = "You are an AI programming assistant, that gives comprehensive answers. Do not use any Markdown formatting in your answer. Use the following pieces of context to answer the question at the end:\n{context}"
+    template = "You are an AI programming assistant, that gives comprehensive answers about a software project based on pieces of. Use the following pieces of context to answer the question at the end:\n{context}"
     system_message_prompt = SystemMessagePromptTemplate.from_template(template)
     human_template = "{question}"
     human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
