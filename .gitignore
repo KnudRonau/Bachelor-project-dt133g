@@ -5,5 +5,5 @@
 __pycache__/
 repo_data/
 vector_database_data/
-
+log_data/
 

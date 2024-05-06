@@ -8,6 +8,7 @@ class GUI(QMainWindow):
     branches = []
     local_repo_path = ""
     markdowntext = ""
+    log_file_name = ""
 
     def __init__(self):
         super().__init__()
@@ -19,8 +20,6 @@ class GUI(QMainWindow):
         main_layout = QVBoxLayout()
         repo_layout = QHBoxLayout()
         query_layout = QHBoxLayout()
-
-
 
         # Chat Window
         self.chat_log = QTextEdit(self)

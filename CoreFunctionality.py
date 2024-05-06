@@ -30,13 +30,15 @@ def setup(_repo_path: str, _branch: str, _temperature: float):
     vector_database, embeddings_model = rl.load_repo(_repo_path, _branch)
     llm = ChatOpenAI(model="gpt-4-turbo", temperature=_temperature)
 
+
+
 # query model and return answer based on context
 def query_model(_query: str):
     if(vector_database is None or embeddings_model is None or llm is None):
         return "Please load a repository and model first"
     
     embedded_query = embeddings_model.embed_query(_query)
-    context = vector_database.similarity_search_by_vector(embedded_query, k=16)
+    context = vector_database.similarity_search_by_vector(embedded_query, k=32)
     for document in context:
         if "test" in document.metadata.get("file_path"):
             context.remove(document)
@@ -54,5 +56,7 @@ def query_model(_query: str):
             context=context, question=_query
         ).to_string()
     )
+
+    rl.log_data(_query=_query, _response=response.content)
    
     return response.content

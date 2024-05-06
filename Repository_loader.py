@@ -1,6 +1,7 @@
 import git
 import re
 import os
+import datetime
 from langchain_community.document_loaders.git import GitLoader
 from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores.faiss import FAISS
@@ -9,7 +10,23 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 BASE_PATH = "./repo_data/"
 BASE_VECTORDATABASE_PATH = "./vector_database_data/"
+BASE_LOG_PATH = "./log_data/"
 REPO_NAME_PATTERN = r'[^/]+$'
+
+
+# create a log file for the query session
+def create_log_file(_repo_name: str):
+    now = datetime.datetime.now()
+    current_time = now.strftime("%d-%m-%Y - %H-%M-%S")
+    global log_path
+    log_path = BASE_LOG_PATH + _repo_name +" - " + current_time + ".txt"
+    try: 
+        os.makedirs(BASE_LOG_PATH, exist_ok=True)
+        with open(log_path, "w") as f:
+            f.write("Repo: " + _repo_name + "\nTime: " + current_time + "\n\n")
+    except Exception as e:
+        print(e)
+    print("Log file created")
 
 # clones repo and returns local path along with list of branches
 def get_branches_online(_path: str):
@@ -36,8 +53,11 @@ def load_repo(_path: str, _branch: str):
     )
 
     repo = loader.load()
+    # repo name for logger file name
+    repo_name = re.search(REPO_NAME_PATTERN, _path).group(0)
+    create_log_file(repo_name)
 
-    vector_database_path = BASE_VECTORDATABASE_PATH + re.search(REPO_NAME_PATTERN, _path).group(0)
+    vector_database_path = BASE_VECTORDATABASE_PATH + repo_name
 
     embeddings_model = OpenAIEmbeddings(model="text-embedding-3-large")
 
@@ -202,6 +222,15 @@ def load_repo(_path: str, _branch: str):
 
     db.save_local(folder_path=vector_database_path)
     print("Saved vector database to local storage")
+    
 
     return db, embeddings_model
+
+def log_data(_query: str, _response: str):
+    try: 
+        with open(log_path, "w") as f:
+            f.write("Query:\n" + _query + "\n\nResponse:\n" + _response + "\n\n")
+    except Exception as e:
+        print(e)
+
 
