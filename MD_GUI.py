@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QPushButton, QLabel, QSlider, QComboBox, QLineEdit, QVBoxLayout, QWidget, QHBoxLayout 
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QPushButton, QLabel, QSlider, QComboBox, QLineEdit, QVBoxLayout, QWidget, QHBoxLayout, QCheckBox 
 from PyQt5.QtCore import Qt
 import CoreFunctionality as cf
 
@@ -40,7 +40,13 @@ class GUI(QMainWindow):
         self.send_button = QPushButton("Send message", self)
         self.send_button.clicked.connect(self.send_message)
         self.send_button.setFixedHeight(32)
-        self.send_button.setFixedWidth(120)
+        self.send_button.setFixedWidth(100)
+
+        # testing checkbox
+        self.test_checkbox = QCheckBox("Testing question", self)
+        self.test_checkbox.setToolTip("Check if question is related to testing")
+        self.test_checkbox.setFixedHeight(32)
+        self.test_checkbox.setFixedWidth(100)
 
         # Enter Git path
         self.url_input = QLineEdit(self)
@@ -50,7 +56,7 @@ class GUI(QMainWindow):
         self.url_button = QPushButton("Select repository", self)
         self.url_button.clicked.connect(self.on_select_repository)
         self.url_button.setFixedHeight(28)
-        self.url_button.setFixedWidth(120)
+        self.url_button.setFixedWidth(205)
 
         # Temperature slider
         self.label = QLabel("Temperature: 0.0", self)
@@ -74,6 +80,7 @@ class GUI(QMainWindow):
 
         query_layout.addWidget(self.chat_input)
         query_layout.addWidget(self.send_button)
+        query_layout.addWidget(self.test_checkbox)
         main_layout.addLayout(query_layout)
 
         repo_layout.addWidget(self.url_input)
@@ -104,7 +111,7 @@ class GUI(QMainWindow):
 
         self.chat_log.setMarkdown(self.markdowntext)
         self.chat_log.repaint()
-        self.markdowntext += cf.query_model(message)
+        self.markdowntext += cf.query_model(message, self.test_checkbox.isChecked())
         self.chat_log.setMarkdown(self.markdowntext)
         self.chat_log.verticalScrollBar().setValue(self.chat_log.verticalScrollBar().maximum())
         
