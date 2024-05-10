@@ -106,6 +106,7 @@ class GUI(QMainWindow):
         self.chat_log.repaint()
         self.markdowntext += cf.query_model(message)
         self.chat_log.setMarkdown(self.markdowntext)
+        self.chat_log.verticalScrollBar().setValue(self.chat_log.verticalScrollBar().maximum())
         
     # Update the temperature value
     def on_scale(self, value):

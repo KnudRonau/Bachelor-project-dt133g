@@ -39,11 +39,8 @@ def query_model(_query: str):
     
     embedded_query = embeddings_model.embed_query(_query)
     context = vector_database.similarity_search_by_vector(embedded_query, k=32)
-    for document in context:
-        if "test" in document.metadata.get("file_path"):
-            context.remove(document)
 
-    template = "You are an AI programming assistant, that gives comprehensive answers about a software project based on pieces of. Use the following pieces of context to answer the question at the end:\n{context}"
+    template = "You are an AI programming assistant. You give comprehensive answers about software projects based on pieces of its source code. Use the following pieces of context to answer the question at the end:\n{context}"
     system_message_prompt = SystemMessagePromptTemplate.from_template(template)
     human_template = "{question}"
     human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)

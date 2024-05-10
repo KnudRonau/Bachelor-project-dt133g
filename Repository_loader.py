@@ -228,7 +228,7 @@ def load_repo(_path: str, _branch: str):
 
 def log_data(_query: str, _response: str):
     try: 
-        with open(log_path, "w") as f:
+        with open(log_path, "a") as f:
             f.write("Query:\n" + _query + "\n\nResponse:\n" + _response + "\n\n")
     except Exception as e:
         print(e)
