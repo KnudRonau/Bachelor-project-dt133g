@@ -39,7 +39,6 @@ def query_model(_query: str, _testing: bool):
     
     embedded_query = embeddings_model.embed_query(_query)
     context = vector_database.similarity_search_by_vector(embedded_query, k=32)
-    print(context)
 
     if(not _testing):
         index = 0
@@ -49,7 +48,6 @@ def query_model(_query: str, _testing: bool):
             else:
                 index += 1
 
-    print("\n\n\n====== CONTEXT WIHTOUT TEST======\n\n\n" + str(context))
 
     template = "You are an AI programming assistant. You give comprehensive answers about software projects based on pieces of its source code. Use the following pieces of context to answer the question at the end:\n{context}"
     system_message_prompt = SystemMessagePromptTemplate.from_template(template)
